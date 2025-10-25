@@ -15,7 +15,7 @@ type NowHandler struct {
 }
 
 func (nh NowHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	views.PageComponent().Render(r.Context(), w)
+	views.AccountsListPageComponent().Render(r.Context(), w)
 }
 
 func main() {
