@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"passman/views"
 	"time"
@@ -22,5 +23,6 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("views"))))
 	http.Handle("/", NewNowHandler(time.Now))
 
+	fmt.Println("Starting server on port 8080")
 	http.ListenAndServe(":8080", nil)
 }
