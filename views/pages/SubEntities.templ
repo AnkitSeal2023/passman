@@ -1,0 +1,30 @@
+package pages
+
+type Credentials struct{
+	UserName string `json:"uname"`
+	Pass string `json:"pass"`
+}
+
+var data=[2]Credentials{
+	{
+		UserName: "ankit12",
+		Pass: "1122",
+	},
+	{
+		UserName: "ankit13",
+		Pass: "2233",
+	},
+}
+
+templ SubEntities() {
+	<button
+		hx-get="/"
+		hx-target="body"
+		class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+	>
+		Select Option
+	</button>
+	<div class="flex text-left">
+		
+	</div>
+}

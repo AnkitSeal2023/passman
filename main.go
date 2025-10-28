@@ -1,28 +1,27 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
-	"passman/views"
-	"time"
+	"passman/views/pages"
 )
 
-func NewNowHandler(now func() time.Time) NowHandler {
-	return NowHandler{Now: now}
+func ServeEntities(w http.ResponseWriter, r *http.Request) {
+	if err := pages.EntitiesListPage().Render(r.Context(), w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
-type NowHandler struct {
-	Now func() time.Time
-}
-
-func (nh NowHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	views.AccountsListPageComponent().Render(r.Context(), w)
+func ServeSubEntities(w http.ResponseWriter, r *http.Request) {
+	if err := pages.SubEntities().Render(r.Context(), w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func main() {
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("views"))))
-	http.Handle("/", NewNowHandler(time.Now))
-
-	fmt.Println("Starting server on port 8080")
-	http.ListenAndServe(":8080", nil)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("views/static"))))
+	http.HandleFunc("/", ServeEntities)
+	http.HandleFunc("/subentities", ServeSubEntities)
+	log.Println("Starting server on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
