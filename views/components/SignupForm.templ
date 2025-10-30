@@ -2,15 +2,17 @@ package components
 
 templ SignupForm() {
 	<form 
-        class="bg-neutral-700 rounded-2xl bg-gray-600 backdrop-filter backdrop-blur-sm bg-opacity-10 p-5 space-y-2"
+        class="bg-neutral-700 rounded-2xl bg-gray-600 backdrop-filter backdrop-blur-sm bg-opacity-10 md:p-5 p-2 space-y-2 max-w-2xl"
         action="/api/signup"
         method="post"
         >
-            <div class="dark:text-neutral-200 font-bold">SIGNUP</div>
+            <div class="dark:text-neutral-200 font-bold text-center">SIGNUP</div>
             <label for="username" class="dark:text-neutral-300 text-xs">Enter your username</label>
-            <input id="username" class="w-full border focus:border-2 rounded p-2 focus:outline-none focus:ring-0 text-neutral-200 placeholder:text-neutral-500" placeholder="eg: JohnDoe69"/>
-            <label for="password" class="dark:text-neutral-300 text-xs">Enter your password</label>
-            <input id="password" class="w-full border focus:border-2 rounded p-2 focus:outline-none focus:ring-0 text-neutral-200 placeholder:text-neutral-500" placeholder="eg: Oax;I)"/>
+            <input id="username" name="uname" class="w-full border focus:border-2 rounded p-2 focus:outline-none focus:ring-0 text-neutral-200 placeholder:text-neutral-500" placeholder="eg: JohnDoe69"/>
+            <label for="master_password" class="dark:text-neutral-300 text-xs">Set Master password</label>
+            <input id="master_password" name="master_pass" class="w-full border focus:border-2 rounded p-2 focus:outline-none focus:ring-0 text-neutral-200 placeholder:text-neutral-500" placeholder="eg: Oax;I)"/>
+            <label for="cnfrm_password" class="dark:text-neutral-300 text-xs">Confirm Master password</label>
+            <input id="cnfrm_password" class="w-full border focus:border-2 rounded p-2 focus:outline-none focus:ring-0 text-neutral-200 placeholder:text-neutral-500" placeholder="eg: Oax;I)"/>
             <button type="submit" class="bg-neutral-300 hover:bg-neutral-50 w-full rounded text-center p-2 cursor-pointer">Submit</button>
 	</form>
 }

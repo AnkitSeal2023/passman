@@ -30,7 +30,7 @@ func serveSigninPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main() {
+func a() {
 	mux := http.NewServeMux()
 
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("views/static"))))

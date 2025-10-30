@@ -29,7 +29,7 @@ func SigninPage() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"bg-neutral-700 bg-gray-600 backdrop-filter backdrop-blur-sm bg-opacity-30\"></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<html lang=\"en\" class=\"overflow-scroll\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\"><title>PassMan</title><link rel=\"stylesheet\" href=\"/static/styles.css\"><script src=\"https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js\" integrity=\"sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz\" crossorigin=\"anonymous\"></script><script src=\"https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4\"></script><script src=\"/static/script.js\"></script><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap\" rel=\"stylesheet\"></head><body class=\"dark:bg-neutral-950\"><div class=\"flex items-center justify-center h-full flex flex-col space-y-2\"><div class=\"dark:text-neutral-200 bg-neutral-900 rounded p-4 border-0\">SIGNIN PAGE</div><div class=\"dark:text-neutral-200 bg-neutral-900 rounded p-4 border-0\">create a new accout> <a class=\"dark:text-neutral-200 p-4 rounded bg-green-600 text-center\" href=\"/signup\">SIGNUP</a></div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

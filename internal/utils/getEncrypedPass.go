@@ -1,7 +1,7 @@
 package utils
 
 type Account struct {
-	User string `json:"user"`
+	User string `json:"uname"`
 	Pass string `json:"pass"`
 }
 
