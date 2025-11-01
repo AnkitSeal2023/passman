@@ -1,9 +1,10 @@
 package auth
 
-import "errors"
+import (
+	"errors"
+)
 
 func isValidSessionId(session_id string) error {
-
 	if len((session_id)) > 0 {
 		return nil
 	}

@@ -14,11 +14,11 @@ var accounts = [3]string{"github.com", "google.com", "canva.com"}
 
 func copyPassScript(targetId string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_copyPassScript_8671`,
-		Function: `function __templ_copyPassScript_8671(targetId){copyPass(targetId);
+		Name: `__templ_copyPassScript_048d`,
+		Function: `function __templ_copyPassScript_048d(targetId){copyPass(targetId);
 }`,
-		Call:       templ.SafeScript(`__templ_copyPassScript_8671`, targetId),
-		CallInline: templ.SafeScriptInline(`__templ_copyPassScript_8671`, targetId),
+		Call:       templ.SafeScript(`__templ_copyPassScript_048d`, targetId),
+		CallInline: templ.SafeScriptInline(`__templ_copyPassScript_048d`, targetId),
 	}
 }
 
@@ -57,7 +57,7 @@ func PasswordList() templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(subEntityEndpoint)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 16, Col: 123}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 18, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -70,7 +70,7 @@ func PasswordList() templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(passID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 17, Col: 18}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 21, Col: 18}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -83,7 +83,7 @@ func PasswordList() templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(account)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 17, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 21, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -104,7 +104,7 @@ func PasswordList() templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("copyBtn" + fmt.Sprint(index))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 19, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 23, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -117,7 +117,7 @@ func PasswordList() templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(passID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 22, Col: 28}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/PasswordList.templ`, Line: 26, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {

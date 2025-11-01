@@ -1,18 +1,18 @@
 package pages
 
-type Credentials struct{
+type Credentials struct {
 	UserName string `json:"uname"`
-	Pass string `json:"pass"`
+	Pass     string `json:"pass"`
 }
 
-var data=[2]Credentials{
+var data = [2]Credentials{
 	{
 		UserName: "ankit12",
-		Pass: "1122",
+		Pass:     "1122",
 	},
 	{
 		UserName: "ankit13",
-		Pass: "2233",
+		Pass:     "2233",
 	},
 }
 
@@ -24,7 +24,4 @@ templ SubEntities() {
 	>
 		Select Option
 	</button>
-	<div class="flex text-left">
-		
-	</div>
 }

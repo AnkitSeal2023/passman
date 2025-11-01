@@ -30,7 +30,7 @@ func serveSigninPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func a() {
+func main() {
 	mux := http.NewServeMux()
 
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("views/static"))))
@@ -38,7 +38,6 @@ func a() {
 	mux.HandleFunc("/subentities", auth.RequreAuth(serveSubEntities))
 	mux.HandleFunc("/signup", serveSignupPage)
 	mux.HandleFunc("/signin", serveSigninPage)
-
 	mux.HandleFunc("/api/signup", handlers.HandleSignup)
 
 	log.Fatal(http.ListenAndServe(":8080", mux))

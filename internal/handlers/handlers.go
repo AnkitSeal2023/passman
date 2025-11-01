@@ -8,6 +8,7 @@ func HandleSignup(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
+
 	// uname := r.FormValue("uname")
 	// pass := r.FormValue("pass")
 }
