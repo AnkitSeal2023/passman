@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS credentials;
+DROP TABLE IF EXISTS vault_items;
+DROP TABLE IF EXISTS vaults;
+DROP TABLE IF EXISTS users;
