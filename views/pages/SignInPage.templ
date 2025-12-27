@@ -1,6 +1,7 @@
 package pages
 
 templ SigninPage() {
+    <!DOCTYPE html>
 	<html lang="en" class="overflow-scroll">
 		<head>
 			<meta charset="UTF-8"/>
@@ -18,21 +19,91 @@ templ SigninPage() {
 				rel="stylesheet"
 			/>
 		</head>
-		<body class="dark:bg-neutral-950">
-			<div class="flex items-center justify-center h-full flex flex-col space-y-2">
-				<div class="dark:text-neutral-200 bg-neutral-900 rounded p-4 border-0">
-					SIGNIN PAGE
-				</div>
-				<div class="dark:text-neutral-200 bg-neutral-900 rounded p-4 border-0">
-					create a new accout>
-					<a class="dark:text-neutral-200 p-4 rounded bg-green-600 text-center" href="/signup">
-						SIGNUP
-					</a>
+		<body class="bg-gradient-to-br from-green-900 via-neutral-950 to-neutral-900 min-h-screen flex items-center justify-center">
+			<div class="flex items-center justify-center w-full h-full p-4">
+				<div class="bg-neutral-800 rounded-3xl shadow-2xl p-8 max-w-md w-full border border-neutral-700">
+					<div class="text-3xl font-extrabold text-center text-neutral-100 mb-6 tracking-wide">Sign In</div>
+					<form id="signin-form" class="space-y-5">
+						<div>
+							<label for="username" class="block text-neutral-300 text-sm font-semibold mb-2">Username</label>
+							<div class="relative">
+								<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.797.657 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+								</span>
+								<input
+									id="username"
+									name="uname"
+									class="w-full pl-10 pr-4 py-2 rounded-lg bg-neutral-900 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500"
+									placeholder="eg: JohnDoe69"
+									autocomplete="username"
+								/>
+							</div>
+						</div>
+						<div>
+							<label for="password" class="block text-neutral-300 text-sm font-semibold mb-2">Password</label>
+							<div class="relative">
+								<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.104 0 2-.896 2-2V7a2 2 0 10-4 0v2c0 1.104.896 2 2 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 11v2a6 6 0 0012 0v-2"></path></svg>
+								</span>
+								<input
+									id="password"
+									name="master_pass"
+									type="password"
+									class="w-full pl-10 pr-4 py-2 rounded-lg bg-neutral-900 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500"
+									placeholder="Your password"
+									autocomplete="current-password"
+								/>
+							</div>
+						</div>
+						<button
+							type="submit"
+							class="w-full py-2 rounded-lg bg-green-600 text-neutral-900 font-bold text-lg hover:bg-green-500 transition"
+						>
+							Sign In
+						</button>
+						<div class="text-center text-red-400 text-sm mt-2" id="signin-error"></div>
+					</form>
+					<script>
+					document.addEventListener('DOMContentLoaded', function(){
+						const form = document.getElementById('signin-form');
+						const errDiv = document.getElementById('signin-error');
+						form.addEventListener('submit', async function(e){
+							e.preventDefault();
+							errDiv.textContent = '';
+							const uname = document.getElementById('username').value;
+							const pass = document.getElementById('password').value;
+							try {
+								const res = await fetch('/api/signin', {
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({ uname: uname, master_pass: pass })
+								});
+								if (res.ok) {
+									window.location.href = '/';
+								} else if (res.status === 401) {
+									errDiv.textContent = 'Invalid username or password';
+								} else if (res.status === 400) {
+									errDiv.textContent = 'Bad request';
+								} else {
+									errDiv.textContent = 'An error occurred';
+								}
+							} catch (err) {
+								errDiv.textContent = 'Network error';
+								console.error(err);
+							}
+						});
+					});
+					</script>
+					<div class="flex flex-col sm:flex-row justify-center items-center  mt-6 text-center">
+						<span class="text-neutral-300 text-sm">Don't have an account?</span>
+						<a class="flex items-center justify-center" href="/signup">
+							<div class="max-w-37 min-w-2 ml-2 px-4 py-2 rounded-lg bg-green-600 text-neutral-900 font-semibold hover:bg-green-500 transition">
+								Sign Up
+							</div>
+						</a>
+					</div>
 				</div>
 			</div>
 		</body>
 	</html>
-}
-
-templ NewPage() {
 }

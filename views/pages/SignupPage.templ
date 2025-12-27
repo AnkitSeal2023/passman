@@ -3,6 +3,7 @@ package pages
 import "passman/views/components"
 
 templ SignupPage() {
+    <!DOCTYPE html>
 	<html lang="en" class="overflow-scroll">
 		<head>
 			<meta charset="UTF-8"/>
@@ -20,8 +21,8 @@ templ SignupPage() {
 				rel="stylesheet"
 			/>
 		</head>
-		<body class="dark:bg-neutral-950">
-			<div class="flex items-center justify-center h-screen p-2">
+		<body class="dark:bg-neutral-950 bg-gradient-to-br from-green-900 via-neutral-950 to-neutral-900 min-h-screen flex items-center justify-center">
+			<div class="flex items-center justify-center w-full h-full p-4">
 				@components.SignupForm()
 			</div>
 		</body>

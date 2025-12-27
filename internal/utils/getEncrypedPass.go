@@ -11,5 +11,4 @@ type Response struct {
 }
 
 func getEncryptedPass() {
-
 }

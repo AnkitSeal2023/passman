@@ -91,18 +91,18 @@ func DecryptUsingPassphrase(passphrase string, encoded string) ([]byte, error) {
 }
 
 func main() {
-	pass := "correct horse battery staple"
+	passPhrase := "correct horse battery staple"
 	plain := []byte("secret data to encrypt")
 
 	fmt.Printf("Data to encrypt:%v\n", string(plain))
 
-	enc, err := EncryptUsingPassphrase(pass, plain)
+	enc, err := EncryptUsingPassphrase(passPhrase, plain)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("Encrypted:", enc)
 
-	dec, err := DecryptUsingPassphrase(pass, enc)
+	dec, err := DecryptUsingPassphrase(passPhrase, enc)
 	if err != nil {
 		panic(err)
 	}
