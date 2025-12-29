@@ -129,7 +129,7 @@ func HandleSignup(queries *db.Queries) http.HandlerFunc {
 		http.SetCookie(w, &http.Cookie{
 			Name:     "session_id",
 			Value:    session_token,
-			MaxAge:   300,
+			MaxAge:   86400,
 			HttpOnly: true,
 			Secure:   true,
 			Path:     "/",
@@ -137,7 +137,7 @@ func HandleSignup(queries *db.Queries) http.HandlerFunc {
 		http.SetCookie(w, &http.Cookie{
 			Name:     "username",
 			Value:    uname,
-			MaxAge:   300,
+			MaxAge:   86400,
 			HttpOnly: true,
 			Secure:   true,
 			Path:     "/",
@@ -201,7 +201,7 @@ func HandleSignin(queries *db.Queries) http.HandlerFunc {
 		http.SetCookie(w, &http.Cookie{
 			Name:     "session_id",
 			Value:    sessionid,
-			MaxAge:   300,
+			MaxAge:   86400,
 			HttpOnly: true,
 			Secure:   true,
 			Path:     "/",
@@ -209,7 +209,7 @@ func HandleSignin(queries *db.Queries) http.HandlerFunc {
 		http.SetCookie(w, &http.Cookie{
 			Name:     "username",
 			Value:    uname,
-			MaxAge:   300,
+			MaxAge:   86400,
 			HttpOnly: true,
 			Secure:   true,
 			Path:     "/",
@@ -497,8 +497,9 @@ func HandleGetCredentialsByEntity(queries *db.Queries) http.HandlerFunc {
 				}
 
 				allCredentials = append(allCredentials, pages.Credentials{
-					UserName: decryptedName,
-					Pass:     decryptedPass,
+					UserName:     decryptedName,
+					Pass:         decryptedPass,
+					CredentialID: cred.CredentialID,
 				})
 			}
 		}
@@ -507,5 +508,50 @@ func HandleGetCredentialsByEntity(queries *db.Queries) http.HandlerFunc {
 		if err := component.Render(r.Context(), w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+	}
+}
+
+type deleteCredentialReq struct {
+	CredentialID int32 `json:"credential_id"`
+}
+
+func HandleDeleteCredential(queries *db.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			w.Header().Set("Allow", http.MethodDelete)
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		cookie, err := r.Cookie("username")
+		if err != nil {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			log.Print("No username cookie: ", err)
+			return
+		}
+		username := cookie.Value
+
+		var Req deleteCredentialReq
+		defer r.Body.Close()
+		decoder := json.NewDecoder(r.Body)
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&Req); err != nil {
+			http.Error(w, "bad request", http.StatusBadRequest)
+			log.Print("bad request: ", err)
+			return
+		}
+
+		// Delete the credential
+		err = queries.DeleteCredentialByID(context.Background(), Req.CredentialID)
+		if err != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			log.Print("Error deleting credential: ", err)
+			return
+		}
+
+		log.Printf("Successfully deleted credential %d for user %s", Req.CredentialID, username)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{"status": "deleted"})
 	}
 }

@@ -3,12 +3,19 @@ package pages
 import "fmt"
 
 type Credentials struct {
-	UserName string `json:"uname"`
-	Pass     string `json:"pass"`
+	UserName     string `json:"uname"`
+	Pass         string `json:"pass"`
+	CredentialID int32  `json:"credential_id"`
 }
 
 script copyCredScript(targetId string) {
 	copyPass(targetId);
+}
+
+script deleteCredentialScript(credentialID int32) {
+	if (confirm("Are you sure you want to delete this credential?")) {
+		deleteCredential(parseInt(credentialID));
+	}
 }
 
 templ SubEntities(entityName string, credentials []Credentials) {
@@ -39,6 +46,7 @@ templ SubEntities(entityName string, credentials []Credentials) {
 				for index, cred := range credentials {
 					{{ usernameID := fmt.Sprintf("username%d", index) }}
 					{{ passID := fmt.Sprintf("password%d", index) }}
+					{{ deleteID := fmt.Sprintf("delete%d", index) }}
 					<div class="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
 						<div class="space-y-3">
 							<!-- Username Row -->
@@ -92,6 +100,17 @@ templ SubEntities(entityName string, credentials []Credentials) {
 										<rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
 										<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
 									</svg>
+								</button>
+							</div>
+
+							<!-- Delete Row -->
+							<div class="flex justify-end pt-2">
+								<button
+									id={ deleteID }
+									class="cursor-pointer bg-red-900 hover:bg-red-800 text-red-200 hover:text-red-100 px-3 py-2 rounded transition text-sm font-medium"
+									onclick={ deleteCredentialScript(cred.CredentialID) }
+								>
+									Delete
 								</button>
 							</div>
 						</div>

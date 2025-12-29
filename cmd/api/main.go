@@ -88,7 +88,8 @@ func main() {
 	mux.HandleFunc("/signup", serveSignupPage)
 	mux.HandleFunc("/signin", serveSigninPage)
 	mux.HandleFunc("/api/signup/new", handlers.HandleSignup(queries))
-	mux.HandleFunc("/api/newcredential", handlers.HandleNewCredential(queries))
+	mux.HandleFunc("/api/newcredential", auth.RequreAuth(handlers.HandleNewCredential(queries), queries))
+	mux.HandleFunc("/api/deletecredential", auth.RequreAuth(handlers.HandleDeleteCredential(queries), queries))
 	mux.HandleFunc("/api/signin", handlers.HandleSignin(queries))
 
 	log.Fatal(http.ListenAndServe(":5000", mux))

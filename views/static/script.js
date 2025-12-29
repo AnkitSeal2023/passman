@@ -22,6 +22,34 @@ async function copyPass(pass) {
     await navigator.clipboard.write([clipboardItem]);
 }
 
+async function deleteCredential(credentialID) {
+    try {
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        if (window.passman && window.passman.dek) {
+            headers['X-DEK'] = window.passman.dek;
+        }
+
+        const response = await fetch('/api/deletecredential', {
+            method: 'DELETE',
+            headers,
+            body: JSON.stringify({ credential_id: credentialID })
+        });
+
+        if (response.ok) {
+            // Use HTMX to navigate back to home without full page reload
+            htmx.ajax('GET', '/', {target:'#main', select:'#main'});
+        } else {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to delete credential' }));
+            alert(errorData.message || 'Failed to delete credential');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to delete credential');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const addBtn = document.getElementById('addNewPasswordBtn');
     const cancelBtn = document.getElementById('cancelBtn');
@@ -74,7 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 formContainer.classList.add('hidden');
                 addBtn.classList.remove('hidden');
                 form.reset();
-                window.location.reload();
+                // Use HTMX to navigate back to home without full page reload
+                htmx.ajax('GET', '/', {target:'#main', select:'#main'});
             } else {
                 const errorData = await response.json().catch(() => ({ message: 'Failed to save credential' }));
                 alert(errorData.message || 'Failed to save credential');
