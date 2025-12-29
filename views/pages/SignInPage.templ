@@ -78,14 +78,30 @@ templ SigninPage() {
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({ uname: uname, master_pass: pass })
 								});
-								if (res.ok) {
-									window.location.href = '/';
-								} else if (res.status === 401) {
+								const data = await res.json().catch(() => ({}));
+								if (res.ok && data.dek) {
+									window.passman = window.passman || {};
+									window.passman.dek = data.dek;
+									try {
+										sessionStorage.setItem('dek', data.dek);
+									} catch (_) {}
+
+									const page = await fetch('/', {
+										method: 'GET',
+										headers: { 'X-DEK': data.dek }
+									});
+									const html = await page.text();
+									document.open();
+									document.write(html);
+									document.close();
+									return;
+								}
+								if (res.status === 401) {
 									errDiv.textContent = 'Invalid username or password';
 								} else if (res.status === 400) {
 									errDiv.textContent = 'Bad request';
 								} else {
-									errDiv.textContent = 'An error occurred';
+									errDiv.textContent = data.error || 'An error occurred';
 								}
 							} catch (err) {
 								errDiv.textContent = 'Network error';

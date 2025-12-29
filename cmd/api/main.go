@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"encoding/base64"
 	"log"
 	"net/http"
 
@@ -32,13 +33,25 @@ func serveEntities(queries *db.Queries) http.HandlerFunc {
 			encEntities = []string{}
 		}
 
+		dekHeader := r.Header.Get("X-DEK")
+		if dekHeader == "" {
+			http.Error(w, "missing decryption key", http.StatusUnauthorized)
+			return
+		}
+
+		dekBytes, err := base64.RawStdEncoding.DecodeString(dekHeader)
+		if err != nil {
+			http.Error(w, "invalid decryption key", http.StatusUnauthorized)
+			return
+		}
+
 		var entities []string
 		for _, enc := range encEntities {
-			plain, err := utils.DecryptUsingPassphrase("correct horse battery staple", enc)
+			plain, err := utils.DecryptWithDEK(dekBytes, enc)
 			if err != nil {
 				continue
 			}
-			entities = append(entities, string(plain))
+			entities = append(entities, plain)
 		}
 
 		if err := pages.EntitiesListPage(entities).Render(r.Context(), w); err != nil {

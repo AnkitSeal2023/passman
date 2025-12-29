@@ -1,3 +1,19 @@
+// Keep DEK in JS memory (and sessionStorage for page refresh in same tab)
+window.passman = window.passman || {};
+try {
+    window.passman.dek = window.passman.dek || sessionStorage.getItem('dek');
+} catch (_) {
+    window.passman.dek = window.passman.dek || null;
+}
+
+if (window.htmx) {
+    document.addEventListener('htmx:configRequest', function (event) {
+        if (window.passman && window.passman.dek) {
+            event.detail.headers['X-DEK'] = window.passman.dek;
+        }
+    });
+}
+
 async function copyPass(pass) {
     const text = document.getElementById(pass).innerText;
     const type = "text/plain";
@@ -41,11 +57,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
 
         try {
+        const headers = {
+                'Content-Type': 'application/json',
+            };
+        if (window.passman && window.passman.dek) {
+            headers['X-DEK'] = window.passman.dek;
+        }
+
         const response = await fetch('/api/newcredential', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify({ website, username, password })
             });
 

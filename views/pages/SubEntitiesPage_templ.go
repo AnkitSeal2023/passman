@@ -46,14 +46,14 @@ func SubEntities(entityName string, credentials []Credentials) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"space-y-4\"><button hx-get=\"/\" hx-target=\"body\" class=\"inline-flex items-center px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-200 font-semibold rounded-lg transition mb-4\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"mr-2\"><path d=\"m15 18-6-6 6-6\"></path></svg> Back</button><div class=\"mb-4\"><h2 class=\"text-2xl font-bold text-neutral-100\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"space-y-4\"><button hx-get=\"/\" hx-target=\"#main\" hx-select=\"#main\" class=\"inline-flex items-center px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-200 font-semibold rounded-lg transition mb-4\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"mr-2\"><path d=\"m15 18-6-6 6-6\"></path></svg> Back</button><div class=\"mb-4\"><h2 class=\"text-2xl font-bold text-neutral-100\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(entityName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 28, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 29, Col: 63}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -66,7 +66,7 @@ func SubEntities(entityName string, credentials []Credentials) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d account(s)", len(credentials)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 29, Col: 92}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 30, Col: 92}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -96,7 +96,7 @@ func SubEntities(entityName string, credentials []Credentials) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(usernameID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 47, Col: 27}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 48, Col: 27}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -109,7 +109,7 @@ func SubEntities(entityName string, credentials []Credentials) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(cred.UserName)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 47, Col: 75}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 48, Col: 75}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -139,7 +139,7 @@ func SubEntities(entityName string, credentials []Credentials) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(passID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 74, Col: 23}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 75, Col: 23}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
@@ -152,7 +152,7 @@ func SubEntities(entityName string, credentials []Credentials) templ.Component {
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(cred.Pass)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 74, Col: 77}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/SubEntitiesPage.templ`, Line: 75, Col: 77}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {

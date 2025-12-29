@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -213,12 +214,31 @@ func HandleSignin(queries *db.Queries) http.HandlerFunc {
 			Secure:   true,
 			Path:     "/",
 		})
-		w.WriteHeader(http.StatusOK)
+
+		encryptedDEK, err := queries.GetUserDEK(context.Background(), uname)
+		if err != nil || encryptedDEK == "" {
+			http.Error(w, "missing encryption key", http.StatusInternalServerError)
+			return
+		}
+
+		dekBytes, err := utils.DecryptDEKWithKEK(pass, encryptedDEK)
+		if err != nil {
+			http.Error(w, "failed to decrypt key", http.StatusUnauthorized)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		response := map[string]string{
+			"dek": base64.RawStdEncoding.EncodeToString(dekBytes),
+		}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, "failed to encode response", http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
 func HandleNewCredential(queries *db.Queries) http.HandlerFunc {
-	passPhrase := "correct horse battery staple"
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -251,21 +271,32 @@ func HandleNewCredential(queries *db.Queries) http.HandlerFunc {
 		usernameForSite := Req.Username
 		password := Req.Password
 
-		encryptedWebsiteName, err := utils.EncryptUsingPassphrase(passPhrase, []byte(website))
+		dekHeader := r.Header.Get("X-DEK")
+		if dekHeader == "" {
+			http.Error(w, "missing decryption key", http.StatusUnauthorized)
+			return
+		}
+		dekBytes, err := base64.RawStdEncoding.DecodeString(dekHeader)
+		if err != nil {
+			http.Error(w, "invalid decryption key", http.StatusUnauthorized)
+			return
+		}
+
+		encryptedWebsiteName, err := utils.EncryptWithDEK(dekBytes, website)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			log.Print("Error encrypting website name: ", err)
 			return
 		}
 
-		encryptedUsername, err := utils.EncryptUsingPassphrase(passPhrase, []byte(usernameForSite))
+		encryptedUsername, err := utils.EncryptWithDEK(dekBytes, usernameForSite)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			log.Print("Error encrypting username: ", err)
 			return
 		}
 
-		encryptedPassword, err := utils.EncryptUsingPassphrase(passPhrase, []byte(password))
+		encryptedPassword, err := utils.EncryptWithDEK(dekBytes, password)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			log.Print("Error encrypting password: ", err)
@@ -328,11 +359,11 @@ func HandleNewCredential(queries *db.Queries) http.HandlerFunc {
 			return
 		}
 		for _, vi := range userVaultItems {
-			nameBytes, err := utils.DecryptUsingPassphrase(passPhrase, vi.VaultItemNameEncrypted)
+			namePlain, err := utils.DecryptWithDEK(dekBytes, vi.VaultItemNameEncrypted)
 			if err != nil {
 				continue
 			}
-			if string(nameBytes) == website {
+			if namePlain == website {
 				vaultItem = vi
 				found = true
 				break
@@ -422,16 +453,14 @@ func HandleGetCredentialsByEntity(queries *db.Queries) http.HandlerFunc {
 		}
 		username := cookie.Value
 
-		userDEK, err := queries.GetUserDEK(context.Background(), username)
-		if err != nil {
-			http.Error(w, "internal server error", http.StatusInternalServerError)
-			log.Print("Error getting user DEK: ", err)
+		dekHeader := r.Header.Get("X-DEK")
+		if dekHeader == "" {
+			http.Error(w, "missing decryption key", http.StatusUnauthorized)
 			return
 		}
-
-		if userDEK == "" {
-			http.Error(w, "user DEK not found", http.StatusInternalServerError)
-			log.Print("User DEK not valid")
+		dekBytes, err := base64.RawStdEncoding.DecodeString(dekHeader)
+		if err != nil {
+			http.Error(w, "invalid decryption key", http.StatusUnauthorized)
 			return
 		}
 
@@ -444,8 +473,8 @@ func HandleGetCredentialsByEntity(queries *db.Queries) http.HandlerFunc {
 
 		var allCredentials []pages.Credentials
 		for _, vaultItem := range vaultItems {
-			nameBytes, err := utils.DecryptUsingPassphrase("correct horse battery staple", vaultItem.VaultItemNameEncrypted)
-			if err != nil || string(nameBytes) != entityName {
+			namePlain, err := utils.DecryptWithDEK(dekBytes, vaultItem.VaultItemNameEncrypted)
+			if err != nil || namePlain != entityName {
 				continue
 			}
 			credentials, err := queries.GetAllCredentials(context.Background(), vaultItem.VaultItemID)
@@ -455,21 +484,21 @@ func HandleGetCredentialsByEntity(queries *db.Queries) http.HandlerFunc {
 			}
 
 			for _, cred := range credentials {
-				decryptedName, err := utils.DecryptUsingPassphrase("correct horse battery staple", cred.Encryptedcredname)
+				decryptedName, err := utils.DecryptWithDEK(dekBytes, cred.Encryptedcredname)
 				if err != nil {
 					log.Print("Error decrypting credential name: ", err)
 					continue
 				}
 
-				decryptedPass, err := utils.DecryptUsingPassphrase("correct horse battery staple", cred.Encryptedcredpassword)
+				decryptedPass, err := utils.DecryptWithDEK(dekBytes, cred.Encryptedcredpassword)
 				if err != nil {
 					log.Print("Error decrypting password: ", err)
 					continue
 				}
 
 				allCredentials = append(allCredentials, pages.Credentials{
-					UserName: string(decryptedName),
-					Pass:     string(decryptedPass),
+					UserName: decryptedName,
+					Pass:     decryptedPass,
 				})
 			}
 		}
