@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"log"
 	"net/http"
+    "os"
 
 	_ "github.com/lib/pq"
 
@@ -73,7 +74,10 @@ func serveSigninPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	connStr := "postgresql://postgres:2004@localhost:5432/passman?sslmode=disable"
+	connStr := os.Getenv("DATABASE_URL")
+	if connStr == "" {
+		connStr = "postgresql://postgres:2004@localhost:5432/passman?sslmode=disable"
+	}
 
 	conn, err := sql.Open("postgres", connStr)
 	if err != nil {

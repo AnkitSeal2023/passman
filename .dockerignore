@@ -1,0 +1,17 @@
+# Ignore VCS and local artifacts
+.git
+.tmp
+**/tmp/
+node_modules
+
+# Go build cache
+/build
+/bin
+
+# Editor/OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Tests and local data
+/data/
