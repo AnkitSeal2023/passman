@@ -11,46 +11,74 @@ import (
 )
 
 const createCredential = `-- name: CreateCredential :exec
-INSERT INTO credentials (vault_item_id, encryptedCredName, encryptedCredPassword) VALUES ($1, $2, $3)
+INSERT INTO credentials (credential_id, vault_item_id, encryptedCredName, encryptedCredPassword) VALUES ($1, $2, $3, $4)
 `
 
 type CreateCredentialParams struct {
+	CredentialID          int32
 	VaultItemID           int32
 	Encryptedcredname     string
 	Encryptedcredpassword string
 }
 
 func (q *Queries) CreateCredential(ctx context.Context, arg CreateCredentialParams) error {
-	_, err := q.db.ExecContext(ctx, createCredential, arg.VaultItemID, arg.Encryptedcredname, arg.Encryptedcredpassword)
+	_, err := q.db.ExecContext(ctx, createCredential,
+		arg.CredentialID,
+		arg.VaultItemID,
+		arg.Encryptedcredname,
+		arg.Encryptedcredpassword,
+	)
 	return err
 }
 
 const createUser = `-- name: CreateUser :exec
-INSERT INTO users (username, master_password_hash, session_token) VALUES ($1, $2, $3)
+INSERT INTO users (username, master_password_hash, session_token, encr_dek) VALUES ($1, $2, $3, $4)
 `
 
 type CreateUserParams struct {
 	Username           string
 	MasterPasswordHash string
 	SessionToken       sql.NullString
+	EncrDek            string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.db.ExecContext(ctx, createUser, arg.Username, arg.MasterPasswordHash, arg.SessionToken)
+	_, err := q.db.ExecContext(ctx, createUser,
+		arg.Username,
+		arg.MasterPasswordHash,
+		arg.SessionToken,
+		arg.EncrDek,
+	)
+	return err
+}
+
+const createVault = `-- name: CreateVault :exec
+INSERT INTO vaults (vault_id, userid, vault_item_name_encrypted) VALUES ($1, $2, $3)
+`
+
+type CreateVaultParams struct {
+	VaultID                int32
+	Userid                 int32
+	VaultItemNameEncrypted string
+}
+
+func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) error {
+	_, err := q.db.ExecContext(ctx, createVault, arg.VaultID, arg.Userid, arg.VaultItemNameEncrypted)
 	return err
 }
 
 const createVaultItem = `-- name: CreateVaultItem :exec
-INSERT INTO vault_items (vault_id, vault_item_name_encrypted) VALUES ($1, $2)
+INSERT INTO vault_items (vault_item_id, vault_id, vault_item_name_encrypted) VALUES ($1, $2, $3)
 `
 
 type CreateVaultItemParams struct {
+	VaultItemID            int32
 	VaultID                int32
 	VaultItemNameEncrypted string
 }
 
 func (q *Queries) CreateVaultItem(ctx context.Context, arg CreateVaultItemParams) error {
-	_, err := q.db.ExecContext(ctx, createVaultItem, arg.VaultID, arg.VaultItemNameEncrypted)
+	_, err := q.db.ExecContext(ctx, createVaultItem, arg.VaultItemID, arg.VaultID, arg.VaultItemNameEncrypted)
 	return err
 }
 
@@ -123,6 +151,69 @@ func (q *Queries) GetAllCredentials(ctx context.Context, vaultItemID int32) ([]G
 	return items, nil
 }
 
+const getAllVaultItemsByUser = `-- name: GetAllVaultItemsByUser :many
+SELECT DISTINCT vi.vault_item_name_encrypted FROM vault_items vi
+JOIN vaults v ON vi.vault_id = v.vault_id
+JOIN users u ON v.userid = u.userid
+WHERE u.username = $1
+`
+
+func (q *Queries) GetAllVaultItemsByUser(ctx context.Context, username string) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getAllVaultItemsByUser, username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var vault_item_name_encrypted string
+		if err := rows.Scan(&vault_item_name_encrypted); err != nil {
+			return nil, err
+		}
+		items = append(items, vault_item_name_encrypted)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getMaxCredentialId = `-- name: GetMaxCredentialId :one
+SELECT COALESCE(MAX(credential_id), 0) FROM credentials
+`
+
+func (q *Queries) GetMaxCredentialId(ctx context.Context) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getMaxCredentialId)
+	var coalesce interface{}
+	err := row.Scan(&coalesce)
+	return coalesce, err
+}
+
+const getMaxVaultId = `-- name: GetMaxVaultId :one
+SELECT COALESCE(MAX(vault_id), 0) FROM vaults
+`
+
+func (q *Queries) GetMaxVaultId(ctx context.Context) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getMaxVaultId)
+	var coalesce interface{}
+	err := row.Scan(&coalesce)
+	return coalesce, err
+}
+
+const getMaxVaultItemId = `-- name: GetMaxVaultItemId :one
+SELECT COALESCE(MAX(vault_item_id), 0) FROM vault_items
+`
+
+func (q *Queries) GetMaxVaultItemId(ctx context.Context) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getMaxVaultItemId)
+	var coalesce interface{}
+	err := row.Scan(&coalesce)
+	return coalesce, err
+}
+
 const getUserByUsername = `-- name: GetUserByUsername :one
 SELECT userid, username, master_password_hash, session_token FROM users WHERE username = $1
 `
@@ -144,6 +235,119 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (GetUs
 		&i.SessionToken,
 	)
 	return i, err
+}
+
+const getUserDEK = `-- name: GetUserDEK :one
+SELECT encr_dek FROM users WHERE username = $1
+`
+
+func (q *Queries) GetUserDEK(ctx context.Context, username string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getUserDEK, username)
+	var encr_dek string
+	err := row.Scan(&encr_dek)
+	return encr_dek, err
+}
+
+const getVaultByUserId = `-- name: GetVaultByUserId :one
+SELECT vault_id, userid, vault_item_name_encrypted FROM vaults WHERE userid = $1
+`
+
+func (q *Queries) GetVaultByUserId(ctx context.Context, userid int32) (Vault, error) {
+	row := q.db.QueryRowContext(ctx, getVaultByUserId, userid)
+	var i Vault
+	err := row.Scan(&i.VaultID, &i.Userid, &i.VaultItemNameEncrypted)
+	return i, err
+}
+
+const getVaultItemByNameAndVaultId = `-- name: GetVaultItemByNameAndVaultId :one
+SELECT vault_item_id, vault_id, vault_item_name_encrypted FROM vault_items WHERE vault_id = $1 AND vault_item_name_encrypted = $2
+`
+
+type GetVaultItemByNameAndVaultIdParams struct {
+	VaultID                int32
+	VaultItemNameEncrypted string
+}
+
+func (q *Queries) GetVaultItemByNameAndVaultId(ctx context.Context, arg GetVaultItemByNameAndVaultIdParams) (VaultItem, error) {
+	row := q.db.QueryRowContext(ctx, getVaultItemByNameAndVaultId, arg.VaultID, arg.VaultItemNameEncrypted)
+	var i VaultItem
+	err := row.Scan(&i.VaultItemID, &i.VaultID, &i.VaultItemNameEncrypted)
+	return i, err
+}
+
+const getVaultItemsByUserAndName = `-- name: GetVaultItemsByUserAndName :many
+SELECT vi.vault_item_id, vi.vault_item_name_encrypted FROM vault_items vi
+JOIN vaults v ON vi.vault_id = v.vault_id
+JOIN users u ON v.userid = u.userid
+WHERE u.username = $1 AND vi.vault_item_name_encrypted = $2
+`
+
+type GetVaultItemsByUserAndNameParams struct {
+	Username               string
+	VaultItemNameEncrypted string
+}
+
+type GetVaultItemsByUserAndNameRow struct {
+	VaultItemID            int32
+	VaultItemNameEncrypted string
+}
+
+func (q *Queries) GetVaultItemsByUserAndName(ctx context.Context, arg GetVaultItemsByUserAndNameParams) ([]GetVaultItemsByUserAndNameRow, error) {
+	rows, err := q.db.QueryContext(ctx, getVaultItemsByUserAndName, arg.Username, arg.VaultItemNameEncrypted)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetVaultItemsByUserAndNameRow
+	for rows.Next() {
+		var i GetVaultItemsByUserAndNameRow
+		if err := rows.Scan(&i.VaultItemID, &i.VaultItemNameEncrypted); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getVaultItemsForUser = `-- name: GetVaultItemsForUser :many
+SELECT vi.vault_item_id, vi.vault_item_name_encrypted FROM vault_items vi
+JOIN vaults v ON vi.vault_id = v.vault_id
+JOIN users u ON v.userid = u.userid
+WHERE u.username = $1
+`
+
+type GetVaultItemsForUserRow struct {
+	VaultItemID            int32
+	VaultItemNameEncrypted string
+}
+
+func (q *Queries) GetVaultItemsForUser(ctx context.Context, username string) ([]GetVaultItemsForUserRow, error) {
+	rows, err := q.db.QueryContext(ctx, getVaultItemsForUser, username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetVaultItemsForUserRow
+	for rows.Next() {
+		var i GetVaultItemsForUserRow
+		if err := rows.Scan(&i.VaultItemID, &i.VaultItemNameEncrypted); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const insertSessionTokenWithUsername = `-- name: InsertSessionTokenWithUsername :exec

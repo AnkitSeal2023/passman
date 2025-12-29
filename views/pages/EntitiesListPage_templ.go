@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "passman/views/components"
 
-func EntitiesListPage() templ.Component {
+func EntitiesListPage(entities []string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -31,15 +31,51 @@ func EntitiesListPage() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\" class=\"min-h-screen bg-gradient-to-br from-green-900 via-neutral-950 to-neutral-900 font-sans\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\"><title>PassMan</title><link rel=\"stylesheet\" href=\"/static/styles.css\"><script src=\"https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js\" integrity=\"sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz\" crossorigin=\"anonymous\"></script><script src=\"https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4\"></script><script src=\"/static/script.js\"></script><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap\" rel=\"stylesheet\"></head><body class=\"flex justify-center min-h-screen\"><div class=\"max-w-2xl w-full p-1 md:p-5 flex flex-col items-center space-y-5\"><div class=\"bg-neutral-800 rounded-3xl shadow-2xl p-8 w-full border border-neutral-700 backdrop-filter backdrop-blur-sm bg-opacity-10\"><header class=\"flex flex-col items-start space-y-2 mb-6\"><h1 class=\"text-3xl md:text-2xl text-neutral-100 font-extrabold\">Welcome User</h1><hr class=\"w-full border-neutral-700\"></header><section class=\"mb-6\"><div class=\"relative\"><div class=\"absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search-icon\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></div><input class=\"w-full pl-10 pr-4 py-2 rounded-lg bg-neutral-900 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500\" placeholder=\"Search for password\"></div></section><main id=\"main\" class=\"space-y-5\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\" class=\"min-h-screen bg-gradient-to-br from-green-900 via-neutral-950 to-neutral-900 font-sans\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\"><title>PassMan</title><link rel=\"stylesheet\" href=\"/static/styles.css\"><script src=\"https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js\" integrity=\"sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz\" crossorigin=\"anonymous\"></script><script src=\"https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4\"></script><script src=\"/static/script.js?v=20251229\"></script><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap\" rel=\"stylesheet\"></head><body class=\"flex justify-center min-h-screen\"><div class=\"max-w-2xl w-full p-1 md:p-5 flex flex-col items-center space-y-5\"><div class=\"bg-neutral-800 rounded-3xl shadow-2xl p-8 w-full border border-neutral-700 backdrop-filter backdrop-blur-sm bg-opacity-10\"><header class=\"flex flex-col items-start space-y-2 mb-6\"><h1 class=\"text-3xl md:text-2xl text-neutral-100 font-extrabold\">Welcome User</h1><hr class=\"w-full border-neutral-700\"></header><section class=\"mb-6\"><div class=\"relative\"><div class=\"absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search-icon\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></div><input class=\"w-full pl-10 pr-4 py-2 rounded-lg bg-neutral-900 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500\" placeholder=\"Search for password\"></div><div class=\"mt-4 flex justify-end\"><button id=\"addNewPasswordBtn\" class=\"px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition\">+ Add New Password</button></div><div id=\"newCredentialForm\" class=\"hidden mt-6 p-6 bg-neutral-900 rounded-lg border border-neutral-700\"><h3 class=\"text-xl font-semibold text-neutral-100 mb-4\">New Credential</h3><form class=\"space-y-4\"><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label for=\"existingWebsite\" class=\"block text-sm font-medium text-neutral-300 mb-2\">Choose Existing Website</label> <select id=\"existingWebsite\" name=\"existingWebsite\" class=\"w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition\"><option value=\"\">None</option> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PasswordList().Render(ctx, templ_7745c5c3_Buffer)
+		for _, site := range entities {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<option value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var2 string
+			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(site)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/EntitiesListPage.templ`, Line: 54, Col: 32}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(site)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/EntitiesListPage.templ`, Line: 54, Col: 41}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</option>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</select></div><div><label for=\"newWebsite\" class=\"block text-sm font-medium text-neutral-300 mb-2\">Or Create New Website</label> <input type=\"text\" id=\"newWebsite\" name=\"newWebsite\" class=\"w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500\" placeholder=\"e.g., github.com, gmail.com\"></div></div><div><label for=\"username\" class=\"block text-sm font-medium text-neutral-300 mb-2\">Username</label> <input type=\"text\" id=\"username\" name=\"username\" class=\"w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500\" placeholder=\"Enter username\" required></div><div><label for=\"password\" class=\"block text-sm font-medium text-neutral-300 mb-2\">Password</label> <input type=\"password\" id=\"password\" name=\"password\" class=\"w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500\" placeholder=\"Enter password\" required></div><div class=\"flex justify-end space-x-3 mt-6\"><button type=\"button\" id=\"cancelBtn\" class=\"px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-200 font-semibold rounded-lg transition\">Cancel</button> <button type=\"submit\" class=\"px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition\">Save</button></div></form></div></section><main id=\"main\" class=\"space-y-5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</main></div></div></body></html>")
+		templ_7745c5c3_Err = components.PasswordList(entities).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</main></div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

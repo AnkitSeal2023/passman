@@ -2,7 +2,7 @@ package pages
 
 import "passman/views/components"
 
-templ EntitiesListPage() {
+templ EntitiesListPage(entities []string) {
     <!DOCTYPE html>
 	<html lang="en" class="min-h-screen bg-gradient-to-br from-green-900 via-neutral-950 to-neutral-900 font-sans">
 		<head>
@@ -13,7 +13,7 @@ templ EntitiesListPage() {
 			<link rel="stylesheet" href="/static/styles.css"/>
 			<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
 			<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-			<script src="/static/script.js"></script>
+			<script src="/static/script.js?v=20251229"></script>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link
@@ -36,10 +36,79 @@ templ EntitiesListPage() {
 							</div>
 							<input class="w-full pl-10 pr-4 py-2 rounded-lg bg-neutral-900 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500" placeholder="Search for password"/>
 						</div>
+                        <div class="mt-4 flex justify-end">
+							<button id="addNewPasswordBtn" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition">
+                                + Add New Password
+                            </button>
+                        </div>
+
+						<div id="newCredentialForm" class="hidden mt-6 p-6 bg-neutral-900 rounded-lg border border-neutral-700">
+							<h3 class="text-xl font-semibold text-neutral-100 mb-4">New Credential</h3>
+							<form class="space-y-4">
+								<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+									<div>
+										<label for="existingWebsite" class="block text-sm font-medium text-neutral-300 mb-2">Choose Existing Website</label>
+										<select id="existingWebsite" name="existingWebsite" class="w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition">
+											<option value="">None</option>
+											for _, site := range entities {
+												<option value={ site }>{ site }</option>
+											}
+										</select>
+									</div>
+									<div>
+										<label for="newWebsite" class="block text-sm font-medium text-neutral-300 mb-2">Or Create New Website</label>
+										<input 
+											type="text" 
+											id="newWebsite" 
+											name="newWebsite" 
+											class="w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500" 
+											placeholder="e.g., github.com, gmail.com"
+										/>
+									</div>
+								</div>
+								<div>
+									<label for="username" class="block text-sm font-medium text-neutral-300 mb-2">Username</label>
+									<input 
+										type="text" 
+										id="username" 
+										name="username" 
+										class="w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500" 
+										placeholder="Enter username"
+										required
+									/>
+								</div>
+								<div>
+									<label for="password" class="block text-sm font-medium text-neutral-300 mb-2">Password</label>
+									<input 
+										type="password" 
+										id="password" 
+										name="password" 
+										class="w-full px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-700 focus:border-green-500 focus:ring-2 focus:ring-green-600 transition placeholder:text-neutral-500" 
+										placeholder="Enter password"
+										required
+									/>
+								</div>
+								<div class="flex justify-end space-x-3 mt-6">
+									<button 
+										type="button" 
+										id="cancelBtn" 
+										class="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-200 font-semibold rounded-lg transition"
+									>
+										Cancel
+									</button>
+									<button 
+										type="submit" 
+										class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition"
+									>
+										Save
+									</button>
+								</div>
+							</form>
+						</div>
 					</section>
 
 					<main id="main" class="space-y-5">
-						@components.PasswordList()
+						@components.PasswordList(entities)
 					</main>
 				</div>
 			</div>

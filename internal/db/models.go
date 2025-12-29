@@ -22,6 +22,7 @@ type User struct {
 	CreatedAt          sql.NullTime
 	UpdatedAt          sql.NullTime
 	SessionToken       sql.NullString
+	EncrDek            string
 }
 
 type Vault struct {

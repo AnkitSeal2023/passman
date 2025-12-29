@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"io"
 
 	"golang.org/x/crypto/argon2"
@@ -88,23 +87,4 @@ func DecryptUsingPassphrase(passphrase string, encoded string) ([]byte, error) {
 		return nil, err
 	}
 	return plaintext, nil
-}
-
-func main() {
-	passPhrase := "correct horse battery staple"
-	plain := []byte("secret data to encrypt")
-
-	fmt.Printf("Data to encrypt:%v\n", string(plain))
-
-	enc, err := EncryptUsingPassphrase(passPhrase, plain)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Encrypted:", enc)
-
-	dec, err := DecryptUsingPassphrase(passPhrase, enc)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Decrypted:", string(dec))
 }

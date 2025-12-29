@@ -13,7 +13,7 @@ import (
 func isValidSessionToken(queries *db.Queries, session_token string, username string) error {
 	user, err := queries.GetUserByUsername(context.Background(), username)
 	if err != nil {
-		log.Printf("sessions.go:14 : %v", err)
+		log.Printf("sessions.go:16 : %v", err)
 		return err
 	}
 	if user.SessionToken.Valid && user.SessionToken.String == session_token {
