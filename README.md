@@ -43,7 +43,7 @@ Access the application at `http://localhost:5000`
 ## Environment Variables
 
 - `PORT` - Server port (default: 5000)
-- Database connection string should be configured in the application
+- `DATABASE_URL` - PostgreSQL connection string (default: `postgresql://postgres:2004@localhost:5432/passman?sslmode=disable`)
 
 ## Security
 
